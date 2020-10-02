@@ -1,15 +1,19 @@
 package PriceObjects;
 
+import org.json.JSONObject;
+
 import java.math.BigDecimal;
 
 public class PriceObject {
 
     String source;
     BigDecimal price;
+    JSONObject original;
 
-    public PriceObject(BigDecimal price, String source) {
+    public PriceObject(BigDecimal price, String source, JSONObject original) {
         this.price = price;
         this.source = source;
+        this.original = original;
     }
 
     public BigDecimal getPrice() {
@@ -18,6 +22,10 @@ public class PriceObject {
 
     public String getSource() {
         return source;
+    }
+
+    public JSONObject getOriginal() {
+        return original;
     }
 
     @Override

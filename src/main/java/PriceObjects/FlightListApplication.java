@@ -76,24 +76,24 @@ public class FlightListApplication {
 
                 case "duffel_air":
                     double price = Double.parseDouble(sourceObjects.get("price").toString().replaceAll("[^0-9]+", " ").trim());
-                    sortedPrice.add(new PriceObject(BigDecimal.valueOf(price), source));
+                    sortedPrice.add(new PriceObject(BigDecimal.valueOf(price), source, sourceObjects));
                     break;
                 case "virgin":
                     double price_fractional = Double.parseDouble(sourceObjects.get("price_fractional").toString());
-                    sortedPrice.add(new PriceObject(BigDecimal.valueOf((price_fractional / 100)), source));
+                    sortedPrice.add(new PriceObject(BigDecimal.valueOf((price_fractional / 100)), source, sourceObjects));
                     break;
 
                 case "aa":
                     JSONObject p = sourceObjects.getJSONObject("price");
                     BigDecimal usdPrice = BigDecimal.valueOf(Double.parseDouble(p.get("value").toString()));
                     // we would need a converter to check the code key and apply the correct conversion
-                    sortedPrice.add(new PriceObject(usdPrice.multiply(BigDecimal.valueOf(0.78)), source));
+                    sortedPrice.add(new PriceObject(usdPrice.multiply(BigDecimal.valueOf(0.78)), source, sourceObjects));
                     break;
 
                 case "ba":
                     JSONObject p2 = sourceObjects.getJSONObject("price");
                     BigDecimal ukprice = BigDecimal.valueOf(Double.parseDouble(p2.get("value").toString()));
-                    sortedPrice.add(new PriceObject(ukprice, source));
+                    sortedPrice.add(new PriceObject(ukprice, source, sourceObjects));
                     break;
 
                 default:
@@ -105,25 +105,9 @@ public class FlightListApplication {
         List<PriceObject> cheapest = sortedPrice.stream().sorted(Comparator.comparing(PriceObject::getPrice)).collect(Collectors.toList());
 
 
-            // Get the results back in to the format given in the beginning
-        Map<Integer, String> cheapestBooking = new HashMap<>();
-        for (int i = 0; i < cheapest.size(); i++) {
-            PriceObject p = cheapest.get(i);
-            for (int j = 0; j < jsonArray.length(); j++) {
-                String a = jsonArray.getJSONObject(j).getString("source");
-                if (p.getSource().equalsIgnoreCase(a)) {
-                    if(!cheapestBooking.containsValue(jsonArray.getJSONObject(j))){
-                        cheapestBooking.put(i, jsonArray.getJSONObject(j).toString());
-                        break;
-                    }
-                }
-            }
-        }
+        // Get the results back in to the format given in the beginning
+        cheapest.forEach(i -> System.out.println(i.getOriginal()));
 
-        //Print the results to console
-        cheapestBooking.forEach((integer, s) -> {
-            System.out.println(s);
-        });
 
     }
 
